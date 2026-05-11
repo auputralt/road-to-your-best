@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#060606">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Road to Your Best</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -296,6 +299,50 @@
       .escalate-actions .btn { width: 100%; }
       .dash-header { flex-direction: column; align-items: flex-start; gap: 8px; }
       .phase-info { text-align: left; padding-bottom: 0; }
+      .nav-inner { padding: 0 16px; }
+      .nav-links { gap: 16px; }
+      .plan-container, .dashboard, .journey-container { padding: 72px 16px 32px; }
+      .landing { padding: 16px; }
+      .landing::before { width: 300px; height: 300px; }
+      .task-card { padding: 14px; gap: 10px; }
+      .task-text { font-size: .8125rem; }
+      .log-textarea { min-height: 100px; }
+      .phase-head { flex-wrap: wrap; gap: 4px; }
+      .phase-time { margin-left: 0; width: 100%; padding-left: 42px; }
+      .phase-obj { padding-left: 0; margin-top: 4px; }
+      .result-card { padding: 16px; }
+      .escalate-suggest { padding: 16px; }
+      .settings-content { padding: 24px; width: 95%; }
+      .input-wrap { flex-direction: column; }
+      .input-wrap #btn-enhance { align-self: flex-end; margin: 4px 4px 0 0; }
+      .goal-input { padding: 12px 14px; font-size: .875rem; }
+      .feedback-card { padding: 16px; }
+      .btn--large { padding: 14px 24px; }
+    }
+
+    /* Tablet / small desktop */
+    @media (min-width: 481px) and (max-width: 768px) {
+      .plan-container, .dashboard, .journey-container { max-width: 100%; padding-left: 32px; padding-right: 32px; }
+    }
+
+    /* Touch targets — larger tap areas on mobile */
+    @media (pointer: coarse) {
+      .task-card { min-height: 56px; }
+      .task-cb { width: 24px; height: 24px; }
+      .btn { min-height: 44px; }
+      .nav-links a { padding: 8px 0; }
+      .tl-expand { padding: 8px 0; }
+    }
+
+    /* Safe area — notch / home indicator */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .dashboard, .journey-container, .plan-container { padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+      .nav-inner { padding-left: max(24px, env(safe-area-inset-left)); padding-right: max(24px, env(safe-area-inset-right)); }
+    }
+
+    /* Prevent iOS zoom on input focus */
+    @media screen and (max-width: 480px) {
+      .goal-input, .log-textarea, .settings-content input { font-size: 16px; }
     }
   </style>
 </head>
