@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Road to Your Best</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #060606;
+      --surface: #0e0e0e;
+      --surface-hover: #151515;
+      --elevated: #1a1a1a;
+      --accent: #c9a84c;
+      --accent-hover: #d4b85e;
+      --accent-dim: #7a6530;
+      --accent-glow: rgba(201,168,76,0.06);
+      --accent-glow-s: rgba(201,168,76,0.14);
+      --text: #e8e2d8;
+      --text-sec: #9a9080;
+      --text-muted: #4a4540;
+      --danger: #c04040;
+      --danger-bg: rgba(192,64,64,0.08);
+      --success: #45a85c;
+      --success-bg: rgba(69,168,92,0.08);
+      --border: #1a1a1a;
+      --border-accent: rgba(201,168,76,0.2);
+      --r-sm: 6px; --r-md: 10px; --r-lg: 16px;
+      --font-d: 'Syne', sans-serif;
+      --font-b: 'DM Mono', monospace;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-b); font-weight: 400; font-size: .875rem; line-height: 1.6;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+      opacity: .025; pointer-events: none; z-index: 10000;
+    }
+
+    h1,h2,h3,h4 { font-family: var(--font-d); font-weight: 700; line-height: 1.15; letter-spacing: -.02em; }
+    a { color: var(--accent); text-decoration: none; transition: color .2s; }
+    a:hover { color: var(--accent-hover); }
+    ::selection { background: var(--accent); color: var(--bg); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .hidden { display: none !important; }
+    .view { display: none; min-height: 100vh; }
+    .view--active { display: flex; flex-direction: column; animation: viewIn .5s ease forwards; }
+    @keyframes viewIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* NAV */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(6,6,6,.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner { max-width: 720px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--font-d); font-weight: 800; font-size: 1rem; letter-spacing: .08em; color: var(--accent) !important; text-transform: uppercase; cursor: pointer; }
+    .nav-links { display: flex; gap: 24px; }
+    .nav-links a { font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-muted); transition: color .2s; position: relative; cursor: pointer; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .nav-links a.active::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--accent); }
+
+    /* BUTTONS */
+    .btn {
+      font-family: var(--font-b); font-size: .8125rem; font-weight: 500; letter-spacing: .04em;
+      padding: 12px 24px; border: none; border-radius: var(--r-sm); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all .25s ease; text-transform: uppercase;
+    }
+    .btn--primary { background: var(--accent); color: var(--bg); }
+    .btn--primary:hover { background: var(--accent-hover); letter-spacing: .08em; }
+    .btn--primary:disabled { opacity: .3; cursor: not-allowed; letter-spacing: .04em; }
+    .btn--ghost { background: transparent; color: var(--text-sec); border: 1px solid var(--border); }
+    .btn--ghost:hover { color: var(--text); border-color: var(--text-muted); }
+    .btn--small { padding: 8px 16px; font-size: .6875rem; }
+    .btn--large { padding: 16px 32px; font-size: .875rem; }
+    .btn--danger { background: var(--danger); color: #fff; }
+    .btn--danger:hover { opacity: .85; }
+
+    /* LANDING */
+    .landing {
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px; text-align: center; position: relative;
+    }
+    .landing::before {
+      content: ''; position: absolute; top: 38%; left: 50%; transform: translate(-50%,-50%);
+      width: 520px; height: 520px;
+      background: radial-gradient(circle, var(--accent-glow-s) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .landing-eyebrow { font-size: .6875rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-dim); margin-bottom: 28px; opacity: 0; animation: fadeUp .8s ease .2s forwards; }
+    .landing-title {
+      font-size: clamp(2.5rem,8vw,5rem); font-weight: 800; line-height: 1.05; margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--text-sec) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      opacity: 0; animation: fadeUp .8s ease .4s forwards;
+    }
+    .landing-sub { font-size: .8125rem; color: var(--text-muted); letter-spacing: .04em; margin-bottom: 48px; opacity: 0; animation: fadeUp .8s ease .6s forwards; }
+    .landing-group { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; max-width: 520px; opacity: 0; animation: fadeUp .8s ease .8s forwards; }
+
+    .input-wrap {
+      display: flex; align-items: center; width: 100%; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--r-md); padding: 4px;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .input-wrap:focus-within { border-color: var(--accent-dim); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .goal-input { flex: 1; background: transparent; border: none; outline: none; padding: 14px 16px; font-family: var(--font-b); font-size: .9375rem; color: var(--text); }
+    .goal-input::placeholder { color: var(--text-muted); }
+    #btn-enhance {
+      flex-shrink: 0; padding: 10px; border: none; background: transparent;
+      color: var(--text-muted); cursor: pointer; border-radius: var(--r-sm);
+      transition: color .2s, background .2s; display: flex; align-items: center; justify-content: center;
+    }
+    #btn-enhance:hover { color: var(--accent); background: var(--accent-glow); }
+    #btn-begin { width: 100%; }
+    .input-error { color: var(--danger); font-size: .75rem; margin-top: 8px; animation: fadeUp .3s ease; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* PROCESSING */
+    .processing { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+    .processing-ring { width: 48px; height: 48px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .processing-text { font-size: .8125rem; color: var(--text-muted); letter-spacing: .04em; }
+
+    /* RESULT CARDS */
+    .result-card { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; max-width: 560px; margin: 0 auto; }
+    .result-icon { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-d); font-size: 1.5rem; font-weight: 800; margin-bottom: 24px; }
+    .result-card--rejected .result-icon { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(192,64,64,.2); }
+    .result-card--escalate .result-icon { background: var(--accent-glow-s); color: var(--accent); border: 1px solid var(--border-accent); }
+    .result-title { font-size: 1.75rem; margin-bottom: 16px; }
+    .result-msg { color: var(--text-sec); font-size: .875rem; line-height: 1.7; margin-bottom: 32px; }
+    .escalate-suggest { background: var(--surface); border: 1px solid var(--border-accent); border-radius: var(--r-md); padding: 20px 24px; margin-bottom: 32px; width: 100%; text-align: left; }
+    .escalate-suggest label { font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-dim); display: block; margin-bottom: 8px; }
+    .escalate-text { font-family: var(--font-d); font-size: 1.125rem; font-weight: 600; color: var(--accent); line-height: 1.4; }
+    .escalate-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+    /* PLAN */
+    .plan-container { min-height: 100vh; padding: 80px 24px 48px; max-width: 640px; margin: 0 auto; }
+    .plan-header { margin-bottom: 48px; opacity: 0; animation: fadeUp .6s ease .1s forwards; }
+    .plan-eyebrow { font-size: .6875rem; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-dim); margin-bottom: 12px; }
+    .plan-title { font-size: 1.75rem; line-height: 1.3; }
+    .phases { display: flex; flex-direction: column; margin-bottom: 48px; }
+    .phase-card { padding: 24px 0; border-bottom: 1px solid var(--border); opacity: 0; animation: fadeUp .5s ease both; }
+    .phase-card:first-child { border-top: 1px solid var(--border); }
+    .phase-card:nth-child(1) { animation-delay: .15s; }
+    .phase-card:nth-child(2) { animation-delay: .25s; }
+    .phase-card:nth-child(3) { animation-delay: .35s; }
+    .phase-card:nth-child(4) { animation-delay: .45s; }
+    .phase-card:nth-child(5) { animation-delay: .55s; }
+    .phase-card:nth-child(6) { animation-delay: .65s; }
+    .phase-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+    .phase-num { font-family: var(--font-d); font-size: .75rem; font-weight: 800; color: var(--accent); letter-spacing: .06em; flex-shrink: 0; }
+    .phase-title { font-family: var(--font-d); font-size: 1.0625rem; font-weight: 700; }
+    .phase-time { font-size: .6875rem; color: var(--text-muted); margin-left: auto; flex-shrink: 0; }
+    .phase-obj { font-size: .8125rem; color: var(--text-sec); line-height: 1.6; padding-left: 42px; }
+    .plan-footer { text-align: center; opacity: 0; animation: fadeUp .6s ease .8s forwards; }
+
+    /* DASHBOARD */
+    .dashboard { min-height: 100vh; padding: 80px 24px 48px; max-width: 640px; margin: 0 auto; }
+    .dash-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 8px; opacity: 0; animation: fadeUp .5s ease .1s forwards; }
+    .day-ctr { display: flex; align-items: baseline; gap: 6px; }
+    .day-label { font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); }
+    .day-num { font-family: var(--font-d); font-size: clamp(3rem,10vw,5rem); font-weight: 800; line-height: 1; color: var(--accent); }
+    .day-of { font-size: .75rem; color: var(--text-muted); padding-bottom: 8px; }
+    .phase-info { text-align: right; padding-bottom: 8px; }
+    .phase-name { display: block; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent-dim); }
+    .phase-desc { display: block; font-size: .6875rem; color: var(--text-muted); }
+    .prog-wrap { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 40px; overflow: hidden; opacity: 0; animation: fadeUp .5s ease .2s forwards; }
+    .prog-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width 1s ease .3s; }
+
+    .dash-sec { margin-bottom: 36px; }
+    .sec-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+    .sec-head h3 { font-size: .875rem; font-weight: 700; letter-spacing: .02em; }
+    .task-count { font-size: .75rem; color: var(--text-muted); }
+    .sec-hint { font-size: .6875rem; color: var(--text-muted); }
+
+    .tasks-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .task-card {
+      display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+      cursor: pointer; transition: all .25s ease; position: relative;
+      opacity: 0; animation: taskIn .4s ease forwards;
+    }
+    .task-card:nth-child(1){animation-delay:.3s} .task-card:nth-child(2){animation-delay:.4s}
+    .task-card:nth-child(3){animation-delay:.5s} .task-card:nth-child(4){animation-delay:.6s}
+    .task-card:nth-child(5){animation-delay:.7s}
+    @keyframes taskIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+    .task-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--accent); opacity: 0; transition: opacity .2s; border-radius: var(--r-md) 0 0 var(--r-md); }
+    .task-card:hover { background: var(--surface-hover); border-color: var(--text-muted); }
+    .task-card:hover::before { opacity: 1; }
+    .task-card.completed { opacity: .45; }
+    .task-card.completed .task-text { text-decoration: line-through; color: var(--text-muted); }
+    .task-card.completed::before { opacity: 1; background: var(--success); }
+    .task-cb {
+      flex-shrink: 0; width: 20px; height: 20px; border: 1.5px solid var(--text-muted);
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      transition: all .2s; margin-top: 1px;
+    }
+    .task-card.completed .task-cb { background: var(--success); border-color: var(--success); animation: cbPop .3s ease; }
+    @keyframes cbPop { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
+    .task-cb svg { opacity: 0; transition: opacity .2s; }
+    .task-card.completed .task-cb svg { opacity: 1; }
+    .task-num { font-family: var(--font-d); font-size: .6875rem; font-weight: 700; color: var(--text-muted); margin-top: 2px; flex-shrink: 0; width: 16px; }
+    .task-text { font-size: .875rem; line-height: 1.5; transition: all .2s; }
+
+    .log-textarea {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md);
+      padding: 16px; font-family: var(--font-b); font-size: .8125rem; line-height: 1.7; color: var(--text);
+      resize: vertical; min-height: 120px; transition: border-color .3s, box-shadow .3s; margin-bottom: 12px;
+    }
+    .log-textarea:focus { outline: none; border-color: var(--accent-dim); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .log-textarea::placeholder { color: var(--text-muted); }
+
+    .feedback-card { padding: 20px; border-radius: var(--r-md); margin-bottom: 12px; opacity: 0; animation: fadeUp .5s ease both; }
+    .feedback-card:nth-child(2){animation-delay:.15s} .feedback-card:nth-child(3){animation-delay:.3s}
+    .fb--pos { background: var(--success-bg); border: 1px solid rgba(69,168,92,.15); }
+    .fb--crit { background: var(--danger-bg); border: 1px solid rgba(192,64,64,.15); }
+    .fb-label { font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+    .fb--pos .fb-label { color: var(--success); }
+    .fb--crit .fb-label { color: var(--danger); }
+    .fb-text { font-size: .8125rem; line-height: 1.7; color: var(--text-sec); }
+
+    .dev-controls { margin-top: 48px; padding-top: 24px; border-top: 1px dashed var(--border); text-align: center; opacity: .3; transition: opacity .2s; }
+    .dev-controls:hover { opacity: 1; }
+
+    /* SETTINGS MODAL */
+    .settings-modal { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; }
+    .settings-modal.hidden { display: none; }
+    .settings-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.7); }
+    .settings-content { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 32px; max-width: 420px; width: 90%; }
+    .settings-content h3 { margin-bottom: 8px; font-size: 1.125rem; }
+    .settings-content p { font-size: .8125rem; color: var(--text-sec); margin-bottom: 16px; line-height: 1.6; }
+    .settings-content input { width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r-sm); font-family: var(--font-b); font-size: .8125rem; color: var(--text); outline: none; margin-bottom: 16px; }
+    .settings-content input:focus { border-color: var(--accent-dim); }
+    .settings-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+    .settings-status { font-size: .6875rem; color: var(--text-muted); letter-spacing: .02em; }
+    .settings-status.connected { color: var(--success); }
+    .nav-settings-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 4px; transition: color .2s; line-height: 1; }
+    .nav-settings-btn:hover { color: var(--accent); }
+
+    .locked-banner {
+      padding: 14px 18px; background: var(--accent-glow); border: 1px solid var(--border-accent);
+      border-radius: var(--r-md); font-size: .8125rem; color: var(--accent); text-align: center;
+      margin-bottom: 24px; letter-spacing: .02em;
+    }
+
+    /* JOURNEY */
+    .journey-container { min-height: 100vh; padding: 80px 24px 48px; max-width: 640px; margin: 0 auto; }
+    .journey-header { margin-bottom: 40px; opacity: 0; animation: fadeUp .5s ease .1s forwards; }
+    .journey-header h2 { font-size: 1.75rem; margin-bottom: 8px; }
+    .journey-sub { font-size: .8125rem; color: var(--text-muted); }
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+    .tl-entry { position: relative; padding-bottom: 28px; opacity: 0; animation: fadeUp .4s ease both; }
+    .tl-entry::before { content: ''; position: absolute; left: -28px; top: 4px; width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--accent); background: var(--bg); z-index: 1; }
+    .tl-entry.tl--done::before { background: var(--success); border-color: var(--success); }
+    .tl-entry.tl--part::before { background: var(--accent); border-color: var(--accent); }
+    .tl-entry.tl--miss::before { background: var(--danger); border-color: var(--danger); }
+    .tl-day { font-family: var(--font-d); font-size: .8125rem; font-weight: 700; color: var(--accent-dim); margin-bottom: 2px; }
+    .tl-date { font-size: .6875rem; color: var(--text-muted); margin-bottom: 8px; }
+    .tl-tasks { margin-bottom: 8px; }
+    .tl-task { font-size: .75rem; color: var(--text-sec); padding: 2px 0; display: flex; align-items: center; gap: 8px; }
+    .tl-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+    .tl-dot.d { background: var(--success); } .tl-dot.s { background: var(--danger); }
+    .tl-log { font-size: .75rem; color: var(--text-muted); font-style: italic; padding: 8px 12px; background: var(--surface); border-radius: var(--r-sm); border-left: 2px solid var(--border); margin-bottom: 6px; line-height: 1.5; }
+    .tl-fb { font-size: .75rem; color: var(--text-sec); padding: 8px 12px; background: var(--accent-glow); border-radius: var(--r-sm); border-left: 2px solid var(--accent-dim); line-height: 1.5; margin-bottom: 6px; }
+    .tl-expand { font-size: .6875rem; color: var(--text-muted); cursor: pointer; padding: 4px 0; transition: color .2s; background: none; border: none; font-family: var(--font-b); }
+    .tl-expand:hover { color: var(--text); }
+    .tl-details { overflow: hidden; transition: max-height .3s ease; }
+    .journey-empty { text-align: center; padding: 80px 24px; }
+    .journey-empty p { color: var(--text-muted); font-size: .875rem; line-height: 1.7; }
+
+    /* COMPLETED SCREEN */
+    .day-done { text-align: center; padding: 32px 0; }
+    .day-done-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .day-done h3 { font-size: 1.25rem; margin-bottom: 8px; color: var(--accent); }
+    .day-done p { color: var(--text-sec); font-size: .8125rem; }
+
+    @media (max-width: 480px) {
+      .escalate-actions { flex-direction: column; width: 100%; }
+      .escalate-actions .btn { width: 100%; }
+      .dash-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .phase-info { text-align: left; padding-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav" class="hidden">
+  <div class="nav-inner">
+    <a class="nav-logo" id="nav-logo">RTYB</a>
+    <div class="nav-links">
+      <a id="nav-dash">Dashboard</a>
+      <a id="nav-journey">Journey</a>
+      <button id="nav-settings" class="nav-settings-btn" title="Settings">&#9881;</button>
+    </div>
+  </div>
+</nav>
+
+<!-- LANDING -->
+<section id="view-landing" class="view view--active">
+  <div class="landing">
+    <div class="landing-eyebrow">180-Day Achievement Planner</div>
+    <h1 class="landing-title">Road to<br>Your Best</h1>
+    <p class="landing-sub">No mediocrity. No excuses. No turning back.</p>
+    <div class="landing-group">
+      <div class="input-wrap">
+        <input type="text" id="goal-input" class="goal-input" placeholder="What is your road to?" autocomplete="off" spellcheck="false">
+        <button id="btn-enhance" title="AI Enhance">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        </button>
+      </div>
+      <button id="btn-begin" class="btn btn--primary">Begin <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </div>
+    <div id="input-error" class="input-error hidden"></div>
+  </div>
+</section>
+
+<!-- PROCESSING -->
+<section id="view-processing" class="view">
+  <div class="processing">
+    <div class="processing-ring"></div>
+    <p class="processing-text">Evaluating your ambition...</p>
+  </div>
+</section>
+
+<!-- REJECTED -->
+<section id="view-rejected" class="view">
+  <div class="result-card result-card--rejected">
+    <div class="result-icon">&#10005;</div>
+    <h2 class="result-title">Goal Rejected</h2>
+    <p id="reject-msg" class="result-msg"></p>
+    <button id="btn-retry" class="btn btn--primary">Try Again</button>
+  </div>
+</section>
+
+<!-- ESCALATE -->
+<section id="view-escalate" class="view">
+  <div class="result-card result-card--escalate">
+    <div class="result-icon">&uarr;</div>
+    <h2 class="result-title">Aim Higher</h2>
+    <p id="esc-msg" class="result-msg"></p>
+    <div class="escalate-suggest">
+      <label>Suggested goal:</label>
+      <p id="esc-goal" class="escalate-text"></p>
+    </div>
+    <div class="escalate-actions">
+      <button id="btn-accept-esc" class="btn btn--primary">Accept This Goal</button>
+      <button id="btn-edit-goal" class="btn btn--ghost">Edit My Goal</button>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN OVERVIEW -->
+<section id="view-plan" class="view">
+  <div class="plan-container">
+    <div class="plan-header">
+      <div class="plan-eyebrow">Your 180-Day Roadmap</div>
+      <h2 id="plan-title" class="plan-title"></h2>
+    </div>
+    <div id="phases-container" class="phases"></div>
+    <div class="plan-footer">
+      <button id="btn-start" class="btn btn--primary btn--large">Start Day 1 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section id="view-dashboard" class="view">
+  <div class="dashboard">
+    <div class="dash-header">
+      <div class="day-ctr">
+        <span class="day-label">Day</span>
+        <span id="day-num" class="day-num">1</span>
+        <span class="day-of">of 180</span>
+      </div>
+      <div class="phase-info">
+        <span id="p-name" class="phase-name"></span>
+        <span id="p-desc" class="phase-desc"></span>
+      </div>
+    </div>
+    <div class="prog-wrap"><div id="prog-bar" class="prog-bar" style="width:0"></div></div>
+    <div class="dash-sec" id="tasks-sec">
+      <div class="sec-head"><h3>Today's Mission</h3><span id="tc-count" class="task-count">0/5</span></div>
+      <div id="tasks-wrap" class="tasks-wrap"></div>
+    </div>
+    <div class="dash-sec" id="log-sec">
+      <div class="sec-head"><h3>Daily Log</h3><span class="sec-hint">Report your day to the coach</span></div>
+      <textarea id="log-input" class="log-textarea" placeholder="What did you accomplish? What did you skip? Be honest — the coach can see through lies." rows="5"></textarea>
+      <button id="btn-submit-log" class="btn btn--primary" disabled>Submit Log</button>
+    </div>
+    <div class="dash-sec hidden" id="fb-sec">
+      <div class="sec-head"><h3>Coach's Analysis</h3></div>
+      <div class="feedback-card fb--pos"><div class="fb-label">What Worked</div><p id="fb-pos" class="fb-text"></p></div>
+      <div class="feedback-card fb--crit"><div class="fb-label">The Gap</div><p id="fb-crit" class="fb-text"></p></div>
+    </div>
+    <div class="dash-sec hidden" id="done-sec">
+      <div class="day-done">
+        <div class="day-done-icon">&#10003;</div>
+        <h3>Day Complete</h3>
+        <p>You've reported and received your coaching. Rest well — tomorrow's tasks are locked in.</p>
+      </div>
+    </div>
+    <div class="dev-controls"><button id="btn-advance" class="btn btn--ghost btn--small">Advance to Next Day (Dev)</button></div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section id="view-journey" class="view">
+  <div class="journey-container">
+    <div class="journey-header">
+      <h2>Your Journey</h2>
+      <p id="j-sub" class="journey-sub"></p>
+    </div>
+    <div id="timeline" class="timeline"></div>
+    <div id="j-empty" class="journey-empty hidden"><p>Your journey hasn't started yet. Every champion's story begins with Day 1.</p></div>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const KEYS = { user:'rtyb_uid', goal:'rtyb_goal', logs:'rtyb_logs', tasks:'rtyb_tasks', summary:'rtyb_summary', offset:'rtyb_offset' };
+const PHASE_DAYS = 30;
+
+const REJECT_PATTERNS = [
+  'revenge','hurt','harm','kill','hack','scam','steal','abuse','destroy','attack',
+  'bully','stalk','threat','blackmail','fraud','exploit','manipulate','sabotage',
+  'drug','weapon','poison','end life','end my','suicide','self-harm'
+];
+
+const ESCALATIONS = [
+  { match: /blog\s*post/i, escalate: 'Build a newsletter empire with 10,000+ subscribers and become a recognized authority in your niche', msg: "A blog post is a single afternoon. You're capable of building a platform. Let's aim for something that compounds." },
+  { match: /read\s*(a\s*)?book/i, escalate: 'Master a complete field of knowledge through deep study, application, and teaching others', msg: "Reading a book is consumption. Let's turn it into mastery — study, apply, and become the expert." },
+  { match: /lose\s*(some\s*)?weight/i, escalate: 'Achieve a complete physical transformation — build elite strength, endurance, and the discipline of a professional athlete', msg: "Losing weight is a side effect. Let's build a completely new version of you." },
+  { match: /learn\s*(to\s*)?guitar/i, escalate: 'Perform live on stage and record an original EP of 5 songs', msg: "Learning guitar is practice. Let's aim for performance — real stage, real audience, real music." },
+  { match: /start\s*(a\s*)?podcast/i, escalate: 'Build a top-ranked podcast with a loyal audience of 5,000+ listeners and industry recognition', msg: "Starting a podcast is pressing record. Let's build an audience and a reputation." },
+  { match: /learn\s*(to\s*)?code/i, escalate: 'Master full-stack development and ship a production application that serves real users', msg: "Learning to code is a tutorial. Let's build something real that people actually use." },
+  { match: /side\s*hustle/i, escalate: 'Build a revenue-generating business reaching $5,000/month with systems that scale', msg: "A side hustle is a hobby with ambition. Let's build a real business engine." },
+  { match: /cook\b|learn\s*(to\s*)?cook/i, escalate: 'Master 50 recipes across 5 cuisines and host a signature dinner experience', msg: "Learning to cook is survival. Let's aim for mastery — technique, creativity, and presentation." },
+  { match: /get\s*organized|clean\s*(up)?\s*(my\s*)?(room|house|life)/i, escalate: 'Design and implement a complete life operating system — productivity, environment, and habits', msg: "Getting organized is a weekend project. Let's redesign how you operate entirely." },
+];
+
+const CATEGORIES = {
+  fitness: { kw: /fit|weight|gym|body|health|run|muscle|athlet|sport|exercise|workout|physique|strength|endurance|marathon|physio/i,
+    phases: [
+      { t:'Foundation', o:'Establish baseline fitness, assess current capabilities, build foundational movement patterns and habits' },
+      { t:'Build', o:'Progressive overload, increase training volume and intensity, dial in nutrition and recovery protocols' },
+      { t:'Intensify', o:'Push past comfort zones, introduce advanced techniques, break through plateaus with targeted work' },
+      { t:'Peak Performance', o:'Maximize output, refine technique to excellence, achieve personal records across all metrics' },
+      { t:'Optimization', o:'Fine-tune recovery, nutrition timing, and training split for sustainable peak performance' },
+      { t:'Championship', o:'Full expression of your physical potential — you are now unrecognizable from Day 1' }
+    ]},
+  business: { kw: /business|startup|compan|revenue|sales|entrepreneur|launch|product|saas|income|money|profit|market|brand/i,
+    phases: [
+      { t:'Research & Validation', o:'Deep market research, validate real demand, define your unique value proposition and target customer' },
+      { t:'Foundation & MVP', o:'Build your minimum viable product, establish core systems, create your first offering' },
+      { t:'Launch & Traction', o:'Go to market, acquire first customers, gather feedback, iterate relentlessly' },
+      { t:'Growth Engine', o:'Scale what works, optimize funnels, build repeatable acquisition and retention channels' },
+      { t:'Scale & Systematize', o:'Delegate, automate, build team, create systems that generate results without your constant presence' },
+      { t:'Dominance', o:'Establish market position, maximize revenue, build a business that outlasts your daily involvement' }
+    ]},
+  creative: { kw: /write|book|novel|blog|content|art|music|film|photo|design|creative|publish|author|song|album|draw|paint/i,
+    phases: [
+      { t:'Craft Foundation', o:'Study the masters, establish daily creative practice, find your unique voice and medium' },
+      { t:'Creation Sprint', o:'Produce volume without perfectionism — first drafts, prototypes, raw creative output' },
+      { t:'Refinement', o:'Edit, revise, and elevate your best work. Seek critical feedback from trusted sources' },
+      { t:'Professional Polish', o:'Bring your work to publication/production quality. Build your portfolio and public presence' },
+      { t:'Launch & Audience', o:'Release your work to the world, build an audience, establish your creative identity' },
+      { t:'Artistic Legacy', o:'Consolidate your body of work, mentor others, set the stage for your next creative chapter' }
+    ]},
+  learning: { kw: /learn|study|skill|code|program|language|math|science|degree|certif|master|education|course/i,
+    phases: [
+      { t:'Fundamentals', o:'Master the core concepts, build a structured study system, establish daily learning habits' },
+      { t:'Deep Dive', o:'Tackle intermediate material, build projects that apply theory to practice' },
+      { t:'Application', o:'Solve real problems, contribute to communities, build a portfolio of demonstrated skill' },
+      { t:'Advanced Mastery', o:'Study advanced topics, teach others, push into territory that challenges you' },
+      { t:'Expert Territory', o:'Contribute original work, mentor juniors, gain recognition in your field' },
+      { t:'Authority', o:'You are now the person others come to for answers. Document and share your complete knowledge' }
+    ]},
+  general: { kw: /.*/, phases: [
+    { t:'Foundation', o:'Assess your starting point, establish core habits, build your resource base and commitment structure' },
+    { t:'Build', o:'Deepen your practice, seek feedback, push beyond comfort, develop intermediate competence' },
+    { t:'Intensify', o:'Break through plateaus, take on challenges that scare you, double down on what works' },
+    { t:'Peak Execution', o:'Perform at your highest level, optimize every system, achieve measurable breakthroughs' },
+    { t:'Refinement', o:'Fine-tune, eliminate waste, prepare for the championship phase with precision' },
+    { t:'Championship', o:'Full expression of your capability — deliver results that would astonish your Day 1 self' }
+    ]}
+};
+
+const TASK_POOLS = {
+  foundation: [
+    g=>`Research the top 5 people who achieved "${g}" — study their methods in depth`,
+    g=>`Write your honest starting-point assessment for "${g}" — where are you right now?`,
+    g=>`Set up your dedicated workspace and tools for "${g}" — eliminate all distractions`,
+    g=>`Block 2 hours daily in your calendar exclusively for "${g}"`,
+    g=>`Write and sign a personal commitment contract for "${g}"`,
+    g=>`Identify your 3 biggest obstacles to "${g}" and create a countermeasure for each`,
+    g=>`Study one success story related to "${g}" in depth — take notes on their approach`,
+    g=>`Find and join a community of people pursuing similar goals`,
+    g=>`Build your resource library — collect the 5 most important books, tools, or guides for "${g}"`,
+    g=>`Complete your first small win related to "${g}" — momentum starts with action`,
+    g=>`Journal about your deepest motivation for "${g}" — why does this matter to you?`,
+    g=>`Map out the specific skills you need to develop for "${g}"`,
+    g=>`Remove one major distraction from your daily routine`,
+    g=>`Set up a progress tracking system for "${g}" — what gets measured gets managed`,
+    g=>`Practice the core skill of "${g}" for 1 focused hour with zero interruptions`,
+    g=>`Create a morning routine that supports your pursuit of "${g}"`,
+    g=>`Have an honest conversation with someone close to you about your "${g}" commitment`,
+    g=>`Write down your 30-day milestone for "${g}" — make it specific and measurable`,
+  ],
+  build: [
+    g=>`Increase your focused practice time by 50% from Phase 1 — push your capacity`,
+    g=>`Take on a challenge in "${g}" that's slightly beyond your current ability`,
+    g=>`Study one advanced technique related to "${g}" and apply it today`,
+    g=>`Document what's working and what isn't in your "${g}" approach so far`,
+    g=>`Seek direct, honest feedback from someone more experienced in "${g}"`,
+    g=>`Complete a mini-project that demonstrates your growing skill in "${g}"`,
+    g=>`Teach what you've learned about "${g}" to someone else — teaching deepens mastery`,
+    g=>`Analyze your Phase 1 patterns — when do you perform best? What derails you?`,
+    g=>`Push through the resistance on your most difficult "${g}" task — don't avoid the hard thing`,
+    g=>`Develop a pre-performance routine that puts you in peak focus for "${g}"`,
+    g=>`Spend 90 minutes in deep, uninterrupted practice of "${g}" — no phone, no breaks`,
+    g=>`Identify and eliminate your #1 time-waster that's stealing from "${g}" progress`,
+    g=>`Set a specific milestone for the end of this phase and track toward it daily`,
+    g=>`Study a failure case in "${g}" — what went wrong for others and how will you avoid it?`,
+    g=>`Create a weekly review template specifically for your "${g}" progress`,
+  ],
+  intensify: [
+    g=>`Execute the hardest "${g}" task on your list first thing today — no warmup`,
+    g=>`Double your practice session length for "${g}" today — push through the wall`,
+    g=>`Take on a real-world "${g}" challenge that genuinely scares you`,
+    g=>`Get honest feedback on your "${g}" work from 3 different people`,
+    g=>`Break a plateau in "${g}" by completely changing your approach today`,
+    g=>`Sacrifice one comfort to make room for more "${g}" progress`,
+    g=>`Document your biggest lesson from the first 60 days of "${g}" work`,
+    g=>`Create something tangible that proves your "${g}" skill has grown`,
+    g=>`Have a "Maximum Effort Day" — give 100% to every "${g}" task, no shortcuts`,
+    g=>`Analyze your peers in "${g}" — what do the best performers do differently?`,
+    g=>`Practice "${g}" under pressure — simulate a high-stakes scenario`,
+    g=>`Teach an advanced "${g}" concept to solidify your own understanding`,
+    g=>`Confront your weakest "${g}" skill area head-on for 2 focused hours`,
+    g=>`Create a 30-day sprint plan for the rest of this "${g}" phase`,
+    g=>`Record yourself practicing "${g}" and review with critically honest eyes`,
+  ],
+  peak: [
+    g=>`Execute "${g}" at competition level — perform today as if everything depends on it`,
+    g=>`Take a calculated "${g}" risk that could 10x your progress`,
+    g=>`Create something "${g}"-related for public consumption — put your work out there`,
+    g=>`Optimize your #1 bottleneck in "${g}" ruthlessly — no sentimentality`,
+    g=>`Connect with someone at the "${g}" level you want to reach`,
+    g=>`Run a "${g}" experiment and measure the results with hard data`,
+    g=>`Simulate your end "${g}" goal at small scale — prove it's possible`,
+    g=>`Delegate or eliminate everything that doesn't directly advance "${g}"`,
+    g=>`Document your complete "${g}" methodology so far — make it transferable`,
+    g=>`Identify your unfair advantage in "${g}" and double down on it today`,
+    g=>`Set a 2-week "${g}" sprint goal that would shock your Day 1 self`,
+    g=>`Review your Day 1 commitment contract for "${g}" — update it for your current level`,
+    g=>`Perform a detailed time audit — how does every hour serve "${g}"?`,
+    g=>`Build a system that makes "${g}" progress automatic, not effortful`,
+    g=>`Challenge a fundamental assumption you've been holding about "${g}"`,
+  ],
+  refinement: [
+    g=>`Identify the 20% of your "${g}" effort producing 80% of results — then focus there`,
+    g=>`Eliminate one "${g}" process that costs time without adding value`,
+    g=>`Fine-tune your daily "${g}" routine for maximum efficiency and minimum friction`,
+    g=>`Create a quality checklist for your best "${g}" work — what does "excellent" look like?`,
+    g=>`Stress-test your "${g}" skills in an unfamiliar context or environment`,
+    g=>`Write a comprehensive "Lessons Learned" document covering your "${g}" journey`,
+    g=>`Optimize your recovery and sustainability for long-term "${g}" performance`,
+    g=>`Prepare for the championship phase by setting specific final "${g}" targets`,
+    g=>`Identify your remaining "${g}" blind spots and systematically address one`,
+    g=>`Build a portfolio or record of your best "${g}" work to date`,
+    g=>`Seek a mentor at the "${g}" level you want to reach next`,
+    g=>`Practice your weakest "${g}" element for 3 focused, honest hours`,
+    g=>`Create an SOP (Standard Operating Procedure) for your "${g}" process`,
+    g=>`Run a quality audit on your last 30 days of "${g}" work — what would you redo?`,
+    g=>`Set specific, measurable "${g}" targets for the final championship phase`,
+  ],
+  championship: [
+    g=>`Perform "${g}" at your absolute peak — this is your championship round, leave nothing behind`,
+    g=>`Execute a capstone "${g}" project that showcases everything you've built over 180 days`,
+    g=>`Share your "${g}" journey and teach what you've mastered to someone starting out`,
+    g=>`Push beyond the "${g}" goals you originally set — aim for the extraordinary`,
+    g=>`Create a lasting artifact of your "${g}" achievement — something that proves what you did`,
+    g=>`Mentor someone just starting their "${g}" journey — your experience has value`,
+    g=>`Document your complete "${g}" transformation from Day 1 to today`,
+    g=>`Set your next "${g}" milestone — you've proven what's possible, now go further`,
+    g=>`Execute "${g}" under real-world conditions — no more practice, this is the real thing`,
+    g=>`Reflect deeply: who were you on Day 1 of "${g}" vs who you are now?`,
+    g=>`Execute with the confidence of 170+ days of "${g}" building — you've earned this`,
+    g=>`Finalize and present your "${g}" work to your target audience or market`,
+    g=>`Create a maintenance plan to sustain and build on your "${g}" achievement`,
+    g=>`Write your "${g}" origin story — from Day 1 to championship day`,
+    g=>`Identify your next mountain. You've proven you can climb. Choose the next peak.`,
+  ]
+};
+
+const COACH = {
+  perfect: {
+    pos: [
+      "Perfect execution, Day {day}. Five for five. This is the standard you've set — now maintain it.",
+      "All five done. {day} days in and you're delivering at 100%. Don't let tomorrow be the day you break the chain.",
+      "Flawless. Every task completed. Most people can't do that once — you're doing it on Day {day}. Respect.",
+    ],
+    crit: [
+      "Nothing to critique today. But understand this: one perfect day is easy. A perfect week? That's where transformation happens. Show me five more.",
+      "No gaps. Good. But ask yourself: did you do these tasks at your absolute best, or just check them off? Quality matters as much as completion.",
+      "Perfect score. Now the real question: can you do this when you don't feel like it? Motivation fades. Discipline doesn't. Prove it tomorrow.",
+    ]
+  },
+  strong: {
+    pos: [
+      "Four out of five. Strong day. You're building real momentum on Day {day}.",
+      "80% execution. That's serious commitment. Most people don't get past 50%. You're different.",
+    ],
+    crit: [
+      'The one you skipped — "{skipped}" — that\'s usually the hardest one. Don\'t avoid the hard thing. Lead with it tomorrow.',
+      "Four is strong. But five is the standard. What happened with the fifth? Address it head-on tomorrow.",
+    ]
+  },
+  mixed: {
+    pos: [
+      "Three out of five. You showed up and put in real work. That counts.",
+      "60% — effort was there, consistency wasn't. Day {day} is where you decide to close the gap.",
+    ],
+    crit: [
+      "60% won't get you to where you said you want to be. You're in Phase {phase} — this is where separation happens. What held you back? Name it, then destroy it tomorrow.",
+      "Three of five. Which three did you pick? If you chose the easy ones, that's a pattern worth breaking. Tomorrow, lead with the hardest task first.",
+    ]
+  },
+  poor: {
+    pos: [
+      "Two tasks done. You didn't quit. That matters more than you think.",
+      "40% — and you're still here logging. That tells me you haven't given up. That's your fuel for tomorrow.",
+    ],
+    crit: [
+      "You're falling behind your own plan. Day {day} — you're {pct}% through this journey. The gap between where you are and where you need to be is growing. Close it. Tomorrow, start with just task #1.",
+      "Two out of five. I won't dress this up — you're building a pattern of underperformance. Tomorrow is a chance to break it. Take it.",
+    ]
+  },
+  minimal: {
+    pos: [
+      "One task completed. It counts. Everything counts. That one task kept the flame alive.",
+      "You did one thing today. In a world of zero effort, that's not nothing. Hold onto it.",
+    ],
+    crit: [
+      "Read your commitment contract tonight — the one from Day 1. Remember who you wanted to become. Tomorrow, give me two. Just two. Build from there.",
+      'One out of five. I see the effort it took to do that one. But four things didn\'t happen. Tomorrow, pick the two most important and execute. No negotiation.',
+    ]
+  },
+  zero: {
+    pos: [
+      "You logged in. You didn't disappear. That's your starting point for tomorrow.",
+      "You're here. You're reporting. That means the fire isn't out — it's just low. A person who quit doesn't open this app.",
+    ],
+    crit: [
+      "Zero tasks on Day {day}. I won't pretend that's okay. But every champion has had a zero day. What separates them is what happens the next morning. Tomorrow, task #1 only. Just the first one.",
+      "Nothing done today. The honest question is: why? Not to beat yourself up — but to understand the obstacle. Name it. Then plan around it. Tomorrow, one task minimum.",
+    ]
+  }
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function uuid() { return 'xxxx-xxxx-xxxx'.replace(/x/g, () => (Math.random()*16|0).toString(16)); }
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+
+function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+function daysBetween(a, b) {
+  const ms = new Date(b) - new Date(a);
+  return Math.max(Math.floor(ms / 86400000), 0);
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+/* ============================================================
+   DATA LAYER (localStorage)
+   ============================================================ */
+const DB = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { localStorage.setItem(k, JSON.stringify(v)); },
+
+  getUserId() {
+    let id = this.get(KEYS.user);
+    if (!id) { id = uuid(); this.set(KEYS.user, id); }
+    return id;
+  },
+
+  getGoal() { return this.get(KEYS.goal); },
+  saveGoal(g) { this.set(KEYS.goal, g); },
+  clearGoal() { localStorage.removeItem(KEYS.goal); localStorage.removeItem(KEYS.logs); localStorage.removeItem(KEYS.tasks); localStorage.removeItem(KEYS.summary); },
+
+  getLogs() { return this.get(KEYS.logs) || []; },
+  addLog(log) { const logs = this.getLogs(); logs.push(log); this.set(KEYS.logs, logs); },
+  getLogForDay(n) { return this.getLogs().find(l => l.day_number === n); },
+
+  getTasksForDay(n) { const t = this.get(KEYS.tasks) || {}; return t[n] || null; },
+  saveTasksForDay(n, tasks) { const t = this.get(KEYS.tasks) || {}; t[n] = tasks; this.set(KEYS.tasks, t); },
+
+  getSummary() { return this.get(KEYS.summary) || ''; },
+  saveSummary(s) { this.set(KEYS.summary, s); },
+
+  getOffset() { return this.get(KEYS.offset) || 0; },
+  setOffset(o) { this.set(KEYS.offset, o); },
+};
+
+/* ============================================================
+   API MODULE
+   ============================================================ */
+const API = {
+  userKey: '',
+
+  async chat(messages, temp = 0.7) {
+    const body = { messages, temperature: temp };
+    if (this.userKey) body.apiKey = this.userKey;
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `API ${res.status}`);
+    }
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || '';
+  },
+
+  async chatJSON(messages, temp = 0.7) {
+    const raw = await this.chat(messages, temp);
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON in response');
+    return JSON.parse(match[0]);
+  }
+};
+
+/* ============================================================
+   AI ENGINE
+   ============================================================ */
+const AI = {
+  async validateGoal(text) {
+    const lower = text.toLowerCase();
+
+    // Fast local reject check
+    for (const pat of REJECT_PATTERNS) {
+      if (lower.includes(pat)) {
+        return {
+          status: 'reject',
+          message: `"${text}" does not meet the standard. This system exists to build, create, and elevate — not to harm, destroy, or degrade. Your goal must be constructive and ambitious. Reframe it around what you want to build, not what you want to break.`,
+          enhanced_goal: null
+        };
+      }
+    }
+
+    // AI-powered validation
+    try {
+      const r = await API.chatJSON([
+        { role: 'system', content: `You are an elite achievement coach for a 180-day transformation program "Road to Your Best". Evaluate the user's goal. Return ONLY JSON:
+{"status":"accept"|"escalate"|"reject","message":"2-3 sentence coaching response","enhanced_goal":"improved ambitious version"}
+Rules: Reject destructive/illegal/harmful goals. Escalate weak or vague goals to ambitious 180-day versions. Accept ambitious specific goals but enhance them further. Always maximize ambition. The enhanced_goal must be a complete, specific 180-day goal.` },
+        { role: 'user', content: `Evaluate this goal: "${text}"` }
+      ]);
+      return { status: r.status || 'accept', message: r.message || '', enhanced_goal: r.enhanced_goal || text };
+    } catch (e) {
+      // Template fallback
+      for (const esc of ESCALATIONS) {
+        if (esc.match.test(text)) {
+          return { status: 'escalate', message: esc.msg, enhanced_goal: esc.escalate };
+        }
+      }
+      const wordCount = text.trim().split(/\s+/).length;
+      if (wordCount <= 3 && !lower.match(/master|build|launch|create|achieve|dominate|transform/)) {
+        return {
+          status: 'escalate',
+          message: `"${text}" is a starting point, not a destination. What does the fully-realized, ambitious version of this look like? Let's 10x the ambition.`,
+          enhanced_goal: `Master ${text} at the highest level — with measurable results, complete dedication, and total transformation over 180 days`
+        };
+      }
+      return { status: 'accept', message: 'Goal accepted. Let\'s build your roadmap.', enhanced_goal: await this.enhanceGoal(text) };
+    }
+  },
+
+  async enhanceGoal(text) {
+    try {
+      const r = await API.chatJSON([
+        { role: 'system', content: `You are an elite achievement coach. Enhance the user's goal to be more ambitious, specific, and measurable for a 180-day transformation. Return ONLY JSON: {"enhanced":"the enhanced goal text"}` },
+        { role: 'user', content: `Enhance this goal: "${text}"` }
+      ]);
+      return r.enhanced || text;
+    } catch (e) {
+      const lower = text.toLowerCase();
+      if (lower.match(/\b(build|launch|create|master|achieve|dominate|transform|establish)\b/)) return text;
+      return `${text} — pursued at the highest level with total commitment and measurable results over 180 days`;
+    }
+  },
+
+  categorizeGoal(text) {
+    const lower = text.toLowerCase();
+    for (const [key, cat] of Object.entries(CATEGORIES)) {
+      if (key === 'general') continue;
+      if (cat.kw.test(lower)) return key;
+    }
+    return 'general';
+  },
+
+  generatePlan(goalText) {
+    const cat = this.categorizeGoal(goalText);
+    const catData = CATEGORIES[cat] || CATEGORIES.general;
+
+    const phases = catData.phases.map((p, i) => ({
+      number: i + 1,
+      title: p.t,
+      timeframe: `Days ${i * PHASE_DAYS + 1}–${(i + 1) * PHASE_DAYS}`,
+      objective: p.o
+    }));
+
+    // Day 1 tasks are always foundation/setup
+    const pool = TASK_POOLS.foundation;
+    const indices = shuffle([...Array(pool.length).keys()]).slice(0, 5);
+    const day1Tasks = indices.map(i => pool[i](goalText));
+
+    return { phases, day_1_tasks: day1Tasks, category: cat };
+  },
+
+  selectNextTasks(goalText, phaseIndex, dayInPhase, recentIndices, completionRate) {
+    const phaseKeys = ['foundation','build','intensify','peak','refinement','championship'];
+    const key = phaseKeys[Math.min(phaseIndex, 5)];
+    const pool = TASK_POOLS[key];
+
+    let available = [];
+    for (let i = 0; i < pool.length; i++) {
+      if (!recentIndices.includes(i)) available.push(i);
+    }
+    if (available.length < 5) available = [...Array(pool.length).keys()];
+
+    shuffle(available);
+    const selected = available.slice(0, 5);
+    return {
+      tasks: selected.map(i => pool[i](goalText)),
+      indices: selected
+    };
+  },
+
+  async generateFeedback(completedCount, completedTasks, skippedTasks, dayNum, phaseNum, userLog) {
+    // AI-powered feedback
+    try {
+      const summary = DB.getSummary() || '';
+      const r = await API.chatJSON([
+        { role: 'system', content: `You are an intense, no-nonsense achievement coach for a 180-day transformation program. Give SHORT feedback — 1-3 sentences per section. Be direct, sometimes harsh, always motivating. You speak like a coach who believes in the person but refuses mediocrity. Return ONLY JSON: {"positive":"what worked","critical":"the gap / what to improve"}` },
+        { role: 'user', content: `Day ${dayNum}/180, Phase ${phaseNum}/6.\nTasks done: ${completedCount}/5\nCompleted: ${completedTasks.join('; ') || 'none'}\nSkipped: ${skippedTasks.join('; ') || 'none'}\nUser's log: "${userLog}"\n${summary ? `Recent context: ${summary.substring(0, 300)}` : ''}` }
+      ], 0.8);
+      return { positive: r.positive || 'Keep going.', critical: r.critical || 'Do better tomorrow.' };
+    } catch (e) {
+      // Template fallback
+      let bucket;
+      if (completedCount === 5) bucket = 'perfect';
+      else if (completedCount === 4) bucket = 'strong';
+      else if (completedCount === 3) bucket = 'mixed';
+      else if (completedCount === 2) bucket = 'poor';
+      else if (completedCount === 1) bucket = 'minimal';
+      else bucket = 'zero';
+      let positive = pick(COACH[bucket].pos).replace('{day}', dayNum).replace('{phase}', phaseNum);
+      let critical = pick(COACH[bucket].crit).replace('{day}', dayNum).replace('{phase}', phaseNum).replace('{skipped}', skippedTasks[0] || 'the one you skipped').replace('{pct}', Math.round((dayNum / 180) * 100));
+      return { positive, critical };
+    }
+  },
+
+  updateSummary(oldSummary, dayNum, completedCount, userLog, phaseTitle) {
+    const rate = completedCount / 5;
+    const line = `Day ${dayNum} (${phaseTitle}): ${completedCount}/5 tasks. ${rate >= 0.8 ? 'Strong' : rate >= 0.6 ? 'Mixed' : 'Below standard'}. ${userLog ? 'Log: ' + userLog.substring(0, 80) : 'No detailed log.'}`;
+
+    let summary = oldSummary ? oldSummary + ' | ' + line : line;
+    // Keep summary under ~500 chars for token efficiency
+    if (summary.length > 500) summary = '...' + summary.substring(summary.length - 480);
+    return summary;
+  }
+};
+
+/* ============================================================
+   APP STATE & CONTROLLER
+   ============================================================ */
+const App = {
+  state: {
+    goal: null,
+    currentDay: 1,
+    todaysTasks: [],
+    todayLog: null,
+    feedback: null,
+    dayOffset: 0,
+    taskIndices: [],
+    view: 'landing'
+  },
+
+  init() {
+    DB.getUserId();
+    this.state.dayOffset = DB.getOffset();
+    const savedKey = localStorage.getItem('rtyb_userkey');
+    if (savedKey) API.userKey = savedKey;
+    this.bindEvents();
+
+    const goal = DB.getGoal();
+    if (goal) {
+      this.state.goal = goal;
+      this.state.currentDay = this.calcDay();
+      this.showNav(true);
+
+      if (this.state.currentDay > 180) {
+        // Journey complete
+        this.state.currentDay = 180;
+      }
+
+      this.loadOrCreateTodayTasks();
+      this.loadTodayLog();
+      this.navigate('dashboard');
+    } else {
+      this.navigate('landing');
+    }
+  },
+
+  calcDay() {
+    if (!this.state.goal) return 1;
+    const d = daysBetween(this.state.goal.started_at, new Date()) + 1 + this.state.dayOffset;
+    return Math.max(1, Math.min(d, 180));
+  },
+
+  getCurrentPhase() {
+    const day = this.state.currentDay;
+    const phaseIndex = Math.min(Math.floor((day - 1) / PHASE_DAYS), 5);
+    return { index: phaseIndex, ...(this.state.goal.phases[phaseIndex] || this.state.goal.phases[0]) };
+  },
+
+  loadOrCreateTodayTasks() {
+    const day = this.state.currentDay;
+    let tasks = DB.getTasksForDay(day);
+
+    if (tasks) {
+      this.state.todaysTasks = tasks;
+      this.state.taskIndices = tasks.map(t => t.poolIndex).filter(i => i !== undefined);
+    } else {
+      // Check if yesterday's log has next_tasks
+      const yesterdayLog = DB.getLogForDay(day - 1);
+      if (yesterdayLog && yesterdayLog.next_tasks && yesterdayLog.next_tasks.length === 5) {
+        tasks = yesterdayLog.next_tasks.map(t => ({ text: t, completed: false, poolIndex: undefined }));
+      } else {
+        // Generate fresh
+        const phase = this.getCurrentPhase();
+        const result = AI.selectNextTasks(this.state.goal.title, phase.index, (day - 1) % PHASE_DAYS, [], 1);
+        tasks = result.tasks.map(t => ({ text: t, completed: false, poolIndex: undefined }));
+        this.state.taskIndices = result.indices;
+        // Store indices
+        result.indices.forEach((idx, i) => { tasks[i].poolIndex = idx; });
+      }
+
+      this.state.todaysTasks = tasks;
+      DB.saveTasksForDay(day, tasks);
+    }
+  },
+
+  loadTodayLog() {
+    const log = DB.getLogForDay(this.state.currentDay);
+    if (log) {
+      this.state.todayLog = log;
+      this.state.feedback = log.feedback;
+    } else {
+      this.state.todayLog = null;
+      this.state.feedback = null;
+    }
+  },
+
+  showNav(show) {
+    document.getElementById('nav').classList.toggle('hidden', !show);
+  },
+
+  navigate(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('view--active'));
+    const el = document.getElementById('view-' + view);
+    if (el) {
+      el.classList.add('view--active');
+      // Force re-trigger animation
+      el.style.animation = 'none';
+      el.offsetHeight;
+      el.style.animation = '';
+    }
+    this.state.view = view;
+
+    // Update nav active state
+    document.getElementById('nav-dash').classList.toggle('active', view === 'dashboard');
+    document.getElementById('nav-journey').classList.toggle('active', view === 'journey');
+
+    if (view === 'dashboard') this.renderDashboard();
+    if (view === 'journey') this.renderJourney();
+  },
+
+  /* ----- EVENT BINDING ----- */
+  bindEvents() {
+    // Landing
+    document.getElementById('btn-begin').addEventListener('click', () => this.handleSubmitGoal());
+    document.getElementById('goal-input').addEventListener('keydown', e => { if (e.key === 'Enter') this.handleSubmitGoal(); });
+    document.getElementById('btn-enhance').addEventListener('click', () => this.handleEnhance());
+    document.getElementById('btn-retry').addEventListener('click', () => { this.navigate('landing'); document.getElementById('goal-input').value = ''; });
+    document.getElementById('btn-accept-esc').addEventListener('click', () => this.handleAcceptEscalation());
+    document.getElementById('btn-edit-goal').addEventListener('click', () => {
+      this.navigate('landing');
+      document.getElementById('goal-input').value = this.state._escalateGoal || '';
+    });
+    document.getElementById('btn-start').addEventListener('click', () => this.handleStartJourney());
+    document.getElementById('btn-submit-log').addEventListener('click', () => this.handleSubmitLog());
+    document.getElementById('btn-advance').addEventListener('click', () => this.handleAdvanceDay());
+    document.getElementById('log-input').addEventListener('input', () => {
+      const btn = document.getElementById('btn-submit-log');
+      btn.disabled = document.getElementById('log-input').value.trim().length < 10;
+    });
+
+    // Nav
+    document.getElementById('nav-logo').addEventListener('click', () => { if (this.state.goal) this.navigate('dashboard'); });
+    document.getElementById('nav-dash').addEventListener('click', () => { if (this.state.goal) this.navigate('dashboard'); });
+    document.getElementById('nav-journey').addEventListener('click', () => { if (this.state.goal) this.navigate('journey'); });
+    document.getElementById('nav-settings').addEventListener('click', () => this.openSettings());
+    document.getElementById('settings-backdrop').addEventListener('click', () => this.closeSettings());
+    document.getElementById('btn-close-settings').addEventListener('click', () => this.closeSettings());
+    document.getElementById('btn-save-key').addEventListener('click', () => this.saveApiKey());
+    document.getElementById('btn-clear-key').addEventListener('click', () => this.clearApiKey());
+  },
+
+  /* ----- LANDING HANDLERS ----- */
+  async handleSubmitGoal() {
+    const input = document.getElementById('goal-input');
+    const text = input.value.trim();
+    const errorEl = document.getElementById('input-error');
+
+    if (!text) { errorEl.textContent = 'Enter a goal to begin.'; errorEl.classList.remove('hidden'); return; }
+    if (text.length < 5) { errorEl.textContent = 'Your goal needs more substance.'; errorEl.classList.remove('hidden'); return; }
+    errorEl.classList.add('hidden');
+
+    this.navigate('processing');
+    await delay(1800 + Math.random() * 800);
+
+    const result = await AI.validateGoal(text);
+
+    if (result.status === 'reject') {
+      document.getElementById('reject-msg').textContent = result.message;
+      this.navigate('rejected');
+    } else if (result.status === 'escalate') {
+      document.getElementById('esc-msg').textContent = result.message;
+      document.getElementById('esc-goal').textContent = result.enhanced_goal;
+      this.state._escalateGoal = result.enhanced_goal;
+      this.navigate('escalate');
+    } else {
+      this.preparePlan(result.enhanced_goal || text);
+    }
+  },
+
+  async handleEnhance() {
+    const input = document.getElementById('goal-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const btn = document.getElementById('btn-enhance');
+    btn.style.color = 'var(--accent)';
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';
+
+    await delay(600);
+
+    const enhanced = await AI.enhanceGoal(text);
+    input.style.transition = 'opacity .2s';
+    input.style.opacity = '0.3';
+    await delay(200);
+    input.value = enhanced;
+    input.style.opacity = '1';
+    input.style.color = 'var(--accent)';
+    setTimeout(() => { input.style.color = ''; }, 1500);
+
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>';
+    btn.style.color = '';
+  },
+
+  handleAcceptEscalation() {
+    this.preparePlan(this.state._escalateGoal);
+  },
+
+  async preparePlan(goalText) {
+    this.navigate('processing');
+    await delay(1200 + Math.random() * 600);
+
+    const plan = AI.generatePlan(goalText);
+    this.state.goal = {
+      id: 'goal_' + Date.now(),
+      title: goalText,
+      category: plan.category,
+      status: 'active',
+      started_at: new Date().toISOString(),
+      phases: plan.phases,
+    };
+    this.state._plan = plan;
+
+    document.getElementById('plan-title').textContent = goalText;
+    const container = document.getElementById('phases-container');
+    container.innerHTML = plan.phases.map((p, i) => `
+      <div class="phase-card">
+        <div class="phase-head">
+          <span class="phase-num">0${p.number}</span>
+          <span class="phase-title">${escapeHtml(p.title)}</span>
+          <span class="phase-time">${escapeHtml(p.timeframe)}</span>
+        </div>
+        <p class="phase-obj">${escapeHtml(p.objective)}</p>
+      </div>
+    `).join('');
+
+    this.navigate('plan');
+  },
+
+  handleStartJourney() {
+    const plan = this.state._plan;
+    if (!plan) return;
+
+    DB.saveGoal(this.state.goal);
+    const day1Tasks = plan.day_1_tasks.map((t, i) => ({ text: t, completed: false, poolIndex: i }));
+    DB.saveTasksForDay(1, day1Tasks);
+    DB.saveSummary('');
+
+    this.state.currentDay = 1;
+    this.state.todaysTasks = day1Tasks;
+    this.state.todayLog = null;
+    this.state.feedback = null;
+    this.state.dayOffset = 0;
+    DB.setOffset(0);
+
+    this.showNav(true);
+    this.navigate('dashboard');
+  },
+
+  /* ----- DASHBOARD ----- */
+  renderDashboard() {
+    const day = this.state.currentDay;
+    const phase = this.getCurrentPhase();
+    const tasks = this.state.todaysTasks;
+    const completed = tasks.filter(t => t.completed).length;
+    const pct = ((day - 1) / 180 * 100).toFixed(1);
+
+    document.getElementById('day-num').textContent = day;
+    document.getElementById('p-name').textContent = `Phase ${phase.number}`;
+    document.getElementById('p-desc').textContent = `${phase.title} · ${phase.timeframe}`;
+    document.getElementById('prog-bar').style.width = pct + '%';
+    document.getElementById('tc-count').textContent = `${completed}/5`;
+
+    // Render tasks
+    const wrap = document.getElementById('tasks-wrap');
+    wrap.innerHTML = tasks.map((t, i) => `
+      <div class="task-card ${t.completed ? 'completed' : ''}" data-idx="${i}">
+        <div class="task-cb">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#060606" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <span class="task-num">${i + 1}</span>
+        <span class="task-text">${escapeHtml(t.text)}</span>
+      </div>
+    `).join('');
+
+    // Bind task clicks
+    wrap.querySelectorAll('.task-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const idx = parseInt(card.dataset.idx);
+        this.toggleTask(idx);
+      });
+    });
+
+    // Log section
+    const hasLog = !!this.state.todayLog;
+    document.getElementById('log-sec').classList.toggle('hidden', hasLog);
+    document.getElementById('fb-sec').classList.toggle('hidden', !this.state.feedback);
+    document.getElementById('done-sec').classList.toggle('hidden', !hasLog);
+
+    // Lock tasks if logged
+    if (hasLog) {
+      wrap.querySelectorAll('.task-card').forEach(card => {
+        card.style.cursor = 'default';
+        card.style.pointerEvents = 'none';
+      });
+    }
+
+    // Render feedback
+    if (this.state.feedback) {
+      document.getElementById('fb-pos').textContent = this.state.feedback.positive;
+      document.getElementById('fb-crit').textContent = this.state.feedback.critical;
+    }
+
+    // Log placeholder
+    const logInput = document.getElementById('log-input');
+    if (day === 1) {
+      logInput.placeholder = "What did you accomplish on Day 1? Be specific — the coach is listening.";
+    } else if (completed >= 4) {
+      logInput.placeholder = "You're building momentum. Report your day — keep the honesty high.";
+    } else {
+      logInput.placeholder = "What happened today? Be honest with yourself. The coach can see through excuses.";
+    }
+
+    logInput.value = '';
+    document.getElementById('btn-submit-log').disabled = true;
+
+    // Feedback section
+    document.getElementById('log-sec').classList.toggle('hidden', hasLog);
+  },
+
+  toggleTask(idx) {
+    if (this.state.todayLog) return; // Locked
+    this.state.todaysTasks[idx].completed = !this.state.todaysTasks[idx].completed;
+    DB.saveTasksForDay(this.state.currentDay, this.state.todaysTasks);
+    this.renderDashboard();
+  },
+
+  async handleSubmitLog() {
+    const logText = document.getElementById('log-input').value.trim();
+    if (logText.length < 10) return;
+
+    const btn = document.getElementById('btn-submit-log');
+    btn.disabled = true;
+    btn.textContent = 'Coach is analyzing...';
+
+    const tasks = this.state.todaysTasks;
+    const completed = tasks.filter(t => t.completed);
+    const skipped = tasks.filter(t => !t.completed);
+    const day = this.state.currentDay;
+    const phase = this.getCurrentPhase();
+
+    // Get recent logs for context
+    const allLogs = DB.getLogs();
+    const recentLogs = allLogs.slice(-3);
+
+    await delay(1200 + Math.random() * 800);
+
+    // Generate feedback
+    const feedback = await AI.generateFeedback(
+      completed.length,
+      completed.map(t => t.text),
+      skipped.map(t => t.text),
+      day,
+      phase.number,
+      logText
+    );
+
+    // Generate next tasks
+    const rate = completed.length / 5;
+    const result = AI.selectNextTasks(
+      this.state.goal.title,
+      phase.index,
+      (day) % PHASE_DAYS,
+      this.state.taskIndices,
+      rate
+    );
+
+    // Update summary
+    const oldSummary = DB.getSummary();
+    const newSummary = AI.updateSummary(oldSummary, day, completed.length, logText, phase.title);
+
+    // Save log
+    const logEntry = {
+      id: 'log_' + Date.now(),
+      goal_id: this.state.goal.id,
+      day_number: day,
+      date: new Date().toISOString(),
+      tasks: tasks.map(t => ({ text: t.text, completed: t.completed })),
+      user_log: logText,
+      feedback: feedback,
+      next_tasks: result.tasks,
+      updated_summary: newSummary,
+    };
+
+    DB.addLog(logEntry);
+    DB.saveSummary(newSummary);
+
+    // Update state
+    this.state.todayLog = logEntry;
+    this.state.feedback = feedback;
+    this.state.taskIndices = result.indices;
+
+    btn.textContent = 'Submit Log';
+    this.renderDashboard();
+  },
+
+  handleAdvanceDay() {
+    this.state.dayOffset++;
+    DB.setOffset(this.state.dayOffset);
+    this.state.currentDay = this.calcDay();
+
+    if (this.state.currentDay > 180) {
+      this.state.currentDay = 180;
+    }
+
+    // Reset for new day
+    this.state.todayLog = null;
+    this.state.feedback = null;
+    this.loadOrCreateTodayTasks();
+    this.renderDashboard();
+  },
+
+  /* ----- JOURNEY ----- */
+  renderJourney() {
+    const logs = DB.getLogs();
+    const goal = this.state.goal;
+
+    if (!goal) return;
+
+    const totalDays = this.state.currentDay;
+    const totalCompleted = logs.reduce((sum, l) => sum + l.tasks.filter(t => t.completed).length, 0);
+    const totalTasks = logs.reduce((sum, l) => sum + l.tasks.length, 0);
+    const overallRate = totalTasks > 0 ? Math.round((totalCompleted / totalTasks) * 100) : 0;
+
+    document.getElementById('j-sub').textContent = `Day ${totalDays} of 180 · ${overallRate}% completion rate · ${logs.length} days logged`;
+
+    const timeline = document.getElementById('timeline');
+    const empty = document.getElementById('j-empty');
+
+    if (logs.length === 0) {
+      timeline.classList.add('hidden');
+      empty.classList.remove('hidden');
+      return;
+    }
+
+    timeline.classList.remove('hidden');
+    empty.classList.add('hidden');
+
+    // Reverse chronological
+    const sorted = [...logs].reverse();
+    timeline.innerHTML = sorted.map((log, entryIdx) => {
+      const completedCount = log.tasks.filter(t => t.completed).length;
+      let statusClass = 'tl--part';
+      if (completedCount === 5) statusClass = 'tl--done';
+      else if (completedCount === 0) statusClass = 'tl--miss';
+
+      const tasksHtml = log.tasks.map(t => `
+        <div class="tl-task">
+          <span class="tl-dot ${t.completed ? 'd' : 's'}"></span>
+          ${escapeHtml(t.text)}
+        </div>
+      `).join('');
+
+      return `
+        <div class="tl-entry ${statusClass}" style="animation-delay: ${entryIdx * 0.05}s">
+          <div class="tl-day">Day ${log.day_number}</div>
+          <div class="tl-date">${formatDate(log.date)} · ${completedCount}/5 tasks completed</div>
+          <button class="tl-expand" data-day="${log.day_number}">Show details</button>
+          <div class="tl-details hidden" id="tl-detail-${log.day_number}">
+            <div class="tl-tasks">${tasksHtml}</div>
+            ${log.user_log ? `<div class="tl-log">"${escapeHtml(log.user_log)}"</div>` : ''}
+            ${log.feedback ? `<div class="tl-fb">${escapeHtml(log.feedback.positive)}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Bind expand buttons
+    timeline.querySelectorAll('.tl-expand').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const day = btn.dataset.day;
+        const details = document.getElementById('tl-detail-' + day);
+        const isHidden = details.classList.contains('hidden');
+        details.classList.toggle('hidden');
+        btn.textContent = isHidden ? 'Hide details' : 'Show details';
+      });
+    });
+  },
+
+  /* ----- SETTINGS ----- */
+  openSettings() {
+    const input = document.getElementById('settings-key');
+    const status = document.getElementById('settings-status');
+    input.value = API.userKey || '';
+    if (API.userKey) {
+      status.textContent = 'Using your personal API key';
+      status.className = 'settings-status connected';
+    } else {
+      status.textContent = 'Using shared AI — no personal key needed';
+      status.className = 'settings-status connected';
+    }
+    document.getElementById('settings-modal').classList.remove('hidden');
+  },
+
+  closeSettings() {
+    document.getElementById('settings-modal').classList.add('hidden');
+  },
+
+  saveApiKey() {
+    const key = document.getElementById('settings-key').value.trim();
+    if (key) {
+      API.userKey = key;
+      localStorage.setItem('rtyb_userkey', key);
+      document.getElementById('settings-status').textContent = 'Personal key saved';
+      document.getElementById('settings-status').className = 'settings-status connected';
+    }
+  },
+
+  clearApiKey() {
+    API.userKey = '';
+    localStorage.removeItem('rtyb_userkey');
+    document.getElementById('settings-key').value = '';
+    document.getElementById('settings-status').textContent = 'Using shared AI — no personal key needed';
+    document.getElementById('settings-status').className = 'settings-status connected';
+  }
+};
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => App.init());
+</script>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="settings-modal hidden">
+  <div class="settings-backdrop" id="settings-backdrop"></div>
+  <div class="settings-content">
+    <h3>Settings</h3>
+    <p>AI coaching is active by default. Optionally bring your own OpenRouter API key for personal usage.</p>
+    <input type="password" id="settings-key" placeholder="Your OpenRouter key (optional)" autocomplete="off" spellcheck="false">
+    <div class="settings-actions">
+      <button id="btn-save-key" class="btn btn--primary btn--small">Save</button>
+      <button id="btn-clear-key" class="btn btn--ghost btn--small">Clear</button>
+      <button id="btn-close-settings" class="btn btn--ghost btn--small">Close</button>
+    </div>
+    <p id="settings-status" class="settings-status"></p>
+  </div>
+</div>
+
+</body>
+</html>
